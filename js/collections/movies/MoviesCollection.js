@@ -16,7 +16,19 @@ define([
         },
 
         getMoviesByActor: function(actorID){
-            
+            var moviesCollection = this,
+                foundedMovies;
+                
+            foundedMovies = moviesCollection.filter(function(item){
+                var isfounded = false;
+                if(item.get('actorCollection').length){
+                    isfounded = _.contains(item.get('actorCollection'), actorID);
+                }
+                 
+                 return isfounded;
+            });
+
+            return foundedMovies;
         }
 
     });

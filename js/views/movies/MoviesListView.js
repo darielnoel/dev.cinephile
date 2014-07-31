@@ -1,9 +1,10 @@
 define([
     'jquery',
+    'jqueyStarRating',
     'underscore',
     'backbone',
     'text!templates/movies/moviesListTemplate.html'
-], function($, _, Backbone, moviesListTemplate) {
+], function($, jqueyStarRating, _, Backbone, moviesListTemplate) {
 
     var MoviesListView = Backbone.View.extend({
         el: $("#movies-list"),
@@ -28,6 +29,9 @@ define([
                 });
 
             instance.$el.html(template);
+
+            var ratingNode = instance.$el.find('.rating');
+            ratingNode.rating();
             this.show();
         },
 

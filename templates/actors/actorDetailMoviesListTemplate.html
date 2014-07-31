@@ -20,7 +20,9 @@
       <td><%= item.get('releaseYear') %></td>
       <td><%= item.get('grossIncome') %></td>
       <td><%= item.get('directorName') %></td>
-      <td><%= item.get('rating') %></td>
+      <td>
+                <input class="rating form-control" data-show-clear=false data-show-caption=false data-size="xs" data-min="0" data-max="5" data-step="1" data-stars=5 value="<%= item.get('rating') %>" data-readonly="true">
+      </td>
       <td><%= item.get('genere') %></td>
       <td>
 

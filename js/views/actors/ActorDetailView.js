@@ -1,5 +1,6 @@
 define([
     'jquery',
+    'jqueyStarRating',
     'jquerySerialize',
     'underscore',
     'backbone',
@@ -7,7 +8,7 @@ define([
     'text!templates/actors/actorDetailTemplate.html',
     'text!templates/actors/actorDetailMoviesListTemplate.html',
     
-], function($, jquerySerialize, _, Backbone, ActorModel, actorDetailTemplate, actorDetailMoviesListTemplate) {
+], function($, jqueyStarRating, jquerySerialize, _, Backbone, ActorModel, actorDetailTemplate, actorDetailMoviesListTemplate) {
 
     var ActorDetailView = Backbone.View.extend({
         el: $("#actor-edit"),
@@ -55,6 +56,9 @@ define([
                         });
 
                         instance.$el.find('.actor-detail-movie-list').html(movieListTemplate);
+
+                        var ratingNode = instance.$el.find('.actor-detail-movie-list .rating');
+                        ratingNode.rating();
                         
                     }
                 });

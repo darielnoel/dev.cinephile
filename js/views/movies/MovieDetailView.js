@@ -1,12 +1,13 @@
 define([
     'jquery',
     'jquerySerialize',
+    'jqueyStarRating',
     'underscore',
     'backbone',
     'models/movie/MovieModel',
     'text!templates/movies/movieDetailTemplate.html',
     'text!templates/movies/movieDetailActorsListTemplate.html'
-], function($, jquerySerialize, _, Backbone, MovieModel, movieDetailTemplate, movieDetailActorsListTemplate) {
+], function($, jquerySerialize, jqueyStarRating, _, Backbone, MovieModel, movieDetailTemplate, movieDetailActorsListTemplate) {
 
     var MovieDetailView = Backbone.View.extend({
         el: $("#movie-detail"),
@@ -39,6 +40,15 @@ define([
                             data: data
                         });
                         instance.$el.html(template);
+
+                        var ratingNode = instance.$el.find('.rating');
+                        ratingNode.rating();
+
+                        ratingNode.on('rating.change', function(event, value, caption) {
+                            instance.model.setRating(value);
+                            instance.model.save();
+                             ratingNode.rating('update', instance.model.get('rating'));
+                        });
 
                         instance.actorsCollection.fetch();
                         var movieActors = [];

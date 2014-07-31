@@ -2,6 +2,7 @@ require.config({
     paths: {
         jquery: 'libs/jquery/jquery-min',
         jquerySerialize: 'libs/jquery/jquery-serialize',
+        jqueyStarRating: 'libs/jquery/star-rating',
         underscore: 'libs/underscore/underscore-min',
         backbone: 'libs/backbone/backbone-min',
         backboneLocalStorage: 'libs/backbone/backbone.localStorage-min',

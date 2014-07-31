@@ -1,7 +1,6 @@
 <header>
-  <h1>Actors</h1>
+  <h3>Cast</h3>
 </header>
-<a href="#/actors/new" class="btn btn-primary">New</a>
 <hr />
 <table class="table striped">
   <thead>
@@ -20,9 +19,6 @@
       <td><%= item.get('gender') %></td>
       <td><%= item.get('birthDate') %></td>
       <td>
-        <a class="btn btn-default btn-sm" role="button" href="#/actors/edit/<%= item.id %>">
-          <span class="glyphicon glyphicon-edit"></span>
-        </a>
         <a class="btn btn-default btn-sm" role="button" href="#/actors/detail/<%= item.id %>">
           <span class="glyphicon glyphicon-eye-open"></span>
         </a>

@@ -13,6 +13,10 @@ define([
         //Return the last 10 added movies 
         recents: function() {
             return this.models.slice(-10);
+        },
+
+        getMoviesByActor: function(actorID){
+            
         }
 
     });

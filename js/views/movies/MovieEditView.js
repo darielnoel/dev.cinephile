@@ -4,12 +4,11 @@ define([
     'underscore',
     'backbone',
     'models/movie/MovieModel',
-    'text!templates/movies/moviesThumbailsTemplate.html',
     'text!templates/movies/movieEditTemplate.html',
     'text!templates/movies/movieActorsListTemplate.html',
     'text!templates/movies/movieToAddActorListTemplate.html',
     'text!templates/actors/actorsTrTemplate.html',
-], function($, jquerySerialize, _, Backbone, MovieModel, moviesThumbailsTemplate, movieEditTemplate, movieActorsListTemplate, movieToAddActorListTemplate, actorsTrTemplate) {
+], function($, jquerySerialize, _, Backbone, MovieModel, movieEditTemplate, movieActorsListTemplate, movieToAddActorListTemplate, actorsTrTemplate) {
 
     var MovieEditView = Backbone.View.extend({
         el: $("#movie-edit"),
@@ -50,16 +49,27 @@ define([
                         instance.$el.html(template);
 
                         instance.actorsCollection.fetch();
-                        var movieActors = [];
+                        var movieActors = [],
+                            actorInstance,
+                            actualActors = [];
+  
                         _.each(instance.model.get('actorCollection'), function(item) {
-                            movieActors.push(instance.actorsCollection.get(item));
+                            actorInstance = instance.actorsCollection.get(item);
+                            if(actorInstance){
+                                movieActors.push(instance.actorsCollection.get(item));
+                                actualActors.push(item);
+                            } 
+       
                         });
+
+                        instance.model.set('actorCollection', actualActors);
+                        instance.model.save(); 
 
                         var templateActors = _.template(movieActorsListTemplate, {
                             data: movieActors
                         });
 
-                        instance.$el.find('.movie-actor-list').html(templateActors);
+                        instance.$el.find('.movie-actor-list').prepend(templateActors);
 
                     }
                 });

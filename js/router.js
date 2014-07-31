@@ -8,11 +8,12 @@ define([
     'views/movies/RecentMoviesView',
     'views/movies/MoviesListView',
     'views/movies/MovieEditView',
+    'views/movies/MovieDetailView',
     'views/actors/ActorsListView',
-    'views/actors/ActorEditView'
+    'views/actors/ActorEditView',
+    'views/actors/ActorDetailView'
 
-
-], function($, _, Backbone, MoviesCollection, ActorsCollection, RecentMoviesView, MoviesListView, MovieEditView, ActorsListView, ActorEditView) {
+], function($, _, Backbone, MoviesCollection, ActorsCollection, RecentMoviesView, MoviesListView, MovieEditView, MovieDetailView, ActorsListView, ActorEditView, ActorDetailView) {
 
     var App = {
         Router: {},
@@ -20,8 +21,10 @@ define([
             'RecentMoviesView': RecentMoviesView,
             'MoviesListView': MoviesListView,
             'MovieEditView': MovieEditView,
+            'MovieDetailView': MovieDetailView,
             'ActorsListView': ActorsListView,
-            'ActorEditView': ActorEditView
+            'ActorEditView': ActorEditView,
+            'ActorDetailView': ActorDetailView
         },
         Config: {},
         Instances: {
@@ -35,9 +38,11 @@ define([
             "movies": "moviesAction",
             "movies/edit/:id": "moviesEditAction",
             "movies/new": "moviesNewAction",
+            "movies/detail/:id": "moviesDetailAction",
             "actors": "actorsAction",
             "actors/edit/:id": "actorsEditAction",
             "actors/new": "actorsNewAction",
+            "actors/detail/:id": "actorsDetailAction",
         }
     });
 
@@ -77,6 +82,15 @@ define([
             });
         });
 
+        app_router.on('route:moviesDetailAction', function(options) {
+            showViewHelper('MovieDetailView', {
+                id: options,
+                moviesCollection: movies,
+                actorsCollection: actors,
+                router: app_router
+            });
+        });
+
         app_router.on('route:actorsAction', function() {
             showViewHelper('ActorsListView', {
                 actorsCollection: actors
@@ -94,6 +108,15 @@ define([
 
         app_router.on('route:actorsNewAction', function(options) {
             showViewHelper('ActorEditView', {
+                moviesCollection: movies,
+                actorsCollection: actors,
+                router: app_router
+            });
+        });
+
+        app_router.on('route:actorsDetailAction', function(options) {
+            showViewHelper('ActorDetailView', {
+                id: options,
                 moviesCollection: movies,
                 actorsCollection: actors,
                 router: app_router

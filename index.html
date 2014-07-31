@@ -39,10 +39,10 @@
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav">
                     <li>
-                        <a href="#">Movies</a>
+                        <a href="#/movies">Movies</a>
                     </li>
                     <li>
-                        <a href="#">Actors</a>
+                        <a href="#/actors">Actors</a>
                     </li>
                 </ul>
                 <form class="navbar-form navbar-right" role="search">
@@ -64,10 +64,6 @@
     <div class="container">
                 <div class="row">
                     <div id="cinephileapp" class="col-lg-12">
-                        <header>
-                          <h1>Recent Movies</h1>
-                        </header>
-
                         <section id="content" style="display: block;">
                           <div id="recent-movies">
                             
@@ -76,6 +72,12 @@
                             
                           </div>
                           <div id="actors-list">
+                            
+                          </div>
+                          <div id="movie-edit">
+                            
+                          </div>
+                          <div id="actor-edit">
                             
                           </div>
                           <div id="movie-detail">
@@ -98,8 +100,10 @@
       </div>
     </div>
     <!-- Templates -->
-    <script type="text/template" id="movies-list-template">
-
+    <script type="text/template" id="movies-thumbails-template">
+        <header>
+          <h1>Recent Movies</h1>
+        </header>
         <% _.each(data, function(item) { %>
 
             <div class="col-lg-3 col-md-4 col-xs-6 thumb">
@@ -111,6 +115,186 @@
         <% }); %>
     </script> 
 
+    <script type="text/template" id="movies-list-template">
+        <header>
+          <h1>Movies</h1>
+        </header>
+        <a href="#/movies/new" class="btn btn-primary">New</a>
+        <hr />
+        <table class="table striped">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Release Year</th>
+              <th>Gross Income</th>
+              <th>Director Name</th>
+              <th>rating</th>
+              <th>Genere</th>
+              <th>Actors</th>
+            </tr>
+          </thead>
+          <tbody>
+          <% _.each(data, function(item) { %>
+            <tr>
+              <td><%= item.get('name') %></td>
+              <td><%= item.get('releaseYear') %></td>
+              <td><%= item.get('grossIncome') %></td>
+              <td><%= item.get('directorName') %></td>
+              <td><%= item.get('rating') %></td>
+              <td><%= item.get('genere') %></td>
+              <td><%= item.get('actorCollection') %></td>
+              <td><a class="btn" href="#/movies/edit/<%= item.id %>">Edit</a></td>
+            </tr>
+          <% }); %>
+          </tbody>
+        </table>
+    </script>
+
+    <script type="text/template" id="movie-edit-template">
+      <div class="row">
+        <legend><%= data ? 'Edit Movie' : 'New Movie' %></legend>
+        <div class="col-lg-4">
+            <form role="form" class="movies-edit-form form-horizontal">
+                <div class="form-group">
+                    <label for="name" class="col-sm-2 control-label">Name</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" name="name" value="<%= data.get('name') %>" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="releaseYear" class="col-sm-2 control-label">Release Year</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" name="releaseYear" value="<%= data.get('releaseYear') %>" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="grossIncome" class="col-sm-2 control-label">Gross Income</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" name="grossIncome" value="<%= data.get('grossIncome') %>" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="directorName" class="col-sm-2 control-label">Director Name</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" name="directorName" value="<%= data.get('directorName') %>" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="rating" class="col-sm-2 control-label">Rating</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" name="rating" value="<%= data.get('rating') %>" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="genere" class="col-sm-2 control-label">Genere</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" name="genere" value="<%= data.get('genere') %>" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="actorCollection" class="col-sm-2 control-label">Actors</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" name="actorCollection" value="<%= data.get('actorCollection') %>" />
+                    </div>
+                </div>
+                <input type="submit" class="btn" value="<%= data.get('name') ? 'Update' : 'Create' %>" />
+                <% if (data.get('name')) { %>
+                  
+                  <input type="button" class="btn btn-danger delete" value="Delete" /> 
+                <% }; %>
+                <input type="hidden" name="cid" value="<%= data.cid %>" />
+                <input type="button" class="btn cancel" value="Back" />
+            </form>
+        </div>
+        <div class="col-lg-8 movie-actor-list">
+        </div>
+      </div>
+    </script>
+
+    <script type="text/template" id="actors-list-template">
+        <header>
+          <h1>Actors</h1>
+        </header>
+        <a href="#/actors/new" class="btn btn-primary">New</a>
+        <hr />
+        <table class="table striped">
+          <thead>
+            <tr>
+              <th>First Name</th>
+              <th>Last Name</th>
+              <th>Gender</th>
+              <th>Birth Date</th>
+              <th>Movies</th>
+            </tr>
+          </thead>
+          <tbody>
+          <% _.each(data, function(item) { %>
+            <tr>
+              <td><%= item.get('firstName') %></td>
+              <td><%= item.get('lastName') %></td>
+              <td><%= item.get('gender') %></td>
+              <td><%= item.get('directorName') %></td>
+              <td><%= item.get('birthDate') %></td>
+              <td><%= item.get('movieCollection') %></td>
+              <td><a class="btn" href="#/actors/edit/<%= item.id %>">Edit</a></td>
+            </tr>
+          <% }); %>
+          </tbody>
+        </table>
+    </script>
+
+    <script type="text/template" id="actor-edit-template">
+      <div class="row">
+        <legend><%= data ? 'Edit Actor' : 'New Actor' %></legend>
+        <div class="col-lg-4">
+            <form role="form" class="actors-edit-form form-horizontal">
+                <div class="form-group">
+                    <label for="firstName" class="col-sm-2 control-label">First Name</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" name="firstName" value="<%= data.get('firstName') %>" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="lastName" class="col-sm-2 control-label">Last Name</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" name="lastName" value="<%= data.get('lastName') %>" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="gender" class="col-sm-2 control-label">Gender</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" name="gender" value="<%= data.get('gender') %>" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="birthDate" class="col-sm-2 control-label">Birth Date</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" name="birthDate" value="<%= data.get('birthDate') %>" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="movieCollection" class="col-sm-2 control-label">Movies</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" name="movieCollection" value="<%= data.get('movieCollection') %>" />
+                    </div>
+                </div>
+                <input type="submit" class="btn" value="<%= data.get('name') ? 'Update' : 'Create' %>" />
+                <% if (data.get('name')) { %>
+                  
+                  <input type="button" class="btn btn-danger delete" value="Delete" /> 
+                <% }; %>
+                <input type="hidden" name="cid" value="<%= data.cid %>" />
+                <input type="button" class="btn cancel" value="Back" />
+            </form>
+        </div>
+        <div class="col-lg-8 actor-actor-list">
+        </div>
+      </div>
+    </script>
+
+
+
+
       <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
       <script src="http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.2/underscore-min.js"></script>
 
@@ -118,15 +302,8 @@
       <script src="http://cdnjs.cloudflare.com/ajax/libs/backbone-localstorage.js/1.1.9/backbone.localStorage-min.js"></script>
 
     <script src="http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.2.0/js/bootstrap.min.js"></script>
+      <script src="config/app.js"></script>
       <script src="scripts/app.js"></script>
-
-    <!-- Menu Toggle Script -->
-    <script>
-    $("#menu-toggle").click(function(e) {
-        e.preventDefault();
-        $("#wrapper").toggleClass("toggled");
-    });
-    </script>
 
 </body>
 

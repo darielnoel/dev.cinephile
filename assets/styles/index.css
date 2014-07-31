@@ -5,6 +5,7 @@
 
 body {
     padding-top: 70px; /* Required padding for .navbar-fixed-top. Change if height of navigation changes. */
+    padding-bottom: 80px;
 }
 
 .thumb {
@@ -12,7 +13,7 @@ body {
 }
 
 .footer{
-	position: absolute;
+	position: fixed;
 	bottom: 0;
 	width: 100%;
 	height: 60px;

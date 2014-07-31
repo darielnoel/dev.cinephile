@@ -1,16 +1,65 @@
 $(function() {
 
-
-    var CinephileApp = { //Custom namespace for Static class
+    //Custom namespace for Static class
+    var CinephileApp = {
             Model: {},
             View: {},
-            Collection: {}
+            Collection: {},
+            Controller: {},
+            Config: CINEPHILEAPP_CONFIG,
         },
         cinephileApp = {
             model: {},
             view: {},
-            collection: {}
+            collection: {},
+            controller: {},
+            util: {}
         }; //Custom namespace for Instances
+
+    /* Router */
+    var Router = Backbone.Router.extend({
+        routes: {
+            "": "homeAction",
+            "movies": "moviesAction",
+            "movies/edit/:id": "moviesEditAction",
+            "movies/new": "moviesNewAction",
+            "actors": "actorsAction",
+            "actors/edit/:id": "actorsEditAction",
+            "actors/new": "actorsNewAction",
+        },
+
+        settingRoutes: function(routes) {
+            var configRoutes = CINEPHILEAPP_CONFIG.Routes;
+
+            _.each(configRoutes, function(value, key) {
+                this.on('route:' + key, cinephileApp.controller[value.controller][key]);
+            }, this);
+        }
+    });
+
+
+    cinephileApp.init = function() {
+
+        //Init Controller
+        cinephileApp.controller.app = new CinephileApp.Controller.App();
+
+        //Create Collection
+        cinephileApp.collection.movies = new CinephileApp.Collection.Movies();
+        cinephileApp.collection.actors = new CinephileApp.Collection.Actors();
+
+        //Init Router
+        cinephileApp.util.router = new Router();
+
+        cinephileApp.util.router.settingRoutes({});
+
+        cinephileApp.view.main = new CinephileApp.View.Main();
+        cinephileApp.view.main.render();
+
+        Backbone.history.start();
+
+    }
+
+
 
     //Views
     CinephileApp.View.Main = Backbone.View.extend({
@@ -21,11 +70,20 @@ $(function() {
 
         initialize: function() {
             //Creo las instancias de las clases que necesito
-            cinephileApp.view.recentMovies = new CinephileApp.View.RecentMovies();
+            //cinephileApp.view.recentMovies = new CinephileApp.View.RecentMovies();
         },
 
         render: function() {
-            cinephileApp.view.recentMovies.render();
+            //cinephileApp.view.recentMovies.render();
+            //this.show();
+        },
+
+        hide: function() {
+            $(this.el).hide();
+        },
+
+        show: function() {
+            this.$el.show();
         }
     });
 
@@ -43,24 +101,268 @@ $(function() {
 
         render: function() {
             var instance = this;
-            console.log('RecentMovies is rendered');
-            console.log(cinephileApp.collection.movies.recents());
 
             //Caching the recent movies values
             var recentMovies = cinephileApp.collection.movies.recents(),
-                template = _.template($('#movies-list-template').html(), {
+                template = _.template($('#movies-thumbails-template').html(), {
                     data: recentMovies
                 });
 
             instance.$el.html(template);
+            this.show();
+        },
+
+        hide: function() {
+            $(this.el).hide();
+        },
+
+        show: function() {
+            this.$el.show();
         }
     });
+
+    CinephileApp.View.MoviesList = Backbone.View.extend({
+        el: $("#movies-list"),
+        events: {
+
+        },
+
+        initialize: function() {},
+
+        render: function() {
+            var instance = this;
+
+            //Sync Data
+            cinephileApp.collection.movies.fetch();
+
+            //Caching the recent movies values
+            var movies = cinephileApp.collection.movies.models,
+                template = _.template($('#movies-list-template').html(), {
+                    data: movies
+                });
+
+            instance.$el.html(template);
+            this.show();
+        },
+
+        hide: function() {
+            this.$el.hide();
+        },
+
+        show: function() {
+            this.$el.show();
+        }
+    });
+
+    CinephileApp.View.MovieEdit = Backbone.View.extend({
+        el: $("#movie-edit"),
+        events: {
+            'submit .movies-edit-form': 'saveItem',
+            'click .delete': 'deleteItem',
+            'click .cancel': 'cancelItem'
+        },
+        model: {},
+
+        initialize: function() {
+            //Creo las instancias de las clases que necesito
+
+        },
+
+        render: function(id) {
+            var instance = this,
+                template,
+                movie;
+            cinephileApp.collection.movies.fetch();
+
+            if (id) {
+                //Caching the recent movies values
+                movie = cinephileApp.collection.movies.get(id);
+                this.model = movie;
+
+                this.model.fetch({
+                    success: function(data) {
+                        var template = _.template($('#movie-edit-template').html(), {
+                            data: data
+                        });
+                        instance.$el.html(template);
+                    }
+                });
+            } else {
+                movie = new CinephileApp.Model.Movie();
+                this.model = movie;
+                template = _.template($('#movie-edit-template').html(), {
+                    data: movie
+                });
+                this.$el.html(template);
+            }
+
+            this.show();
+        },
+
+        saveItem: function(e) {
+            var details = $(e.currentTarget).serializeObject();
+            if (details.cid) {
+                cinephileApp.collection.movies.add(this.model);
+            }
+
+            this.model.save(details, {
+                success: function(data) {
+                    cinephileApp.util.router.navigate('movies', {
+                        trigger: true
+                    });
+                }
+            });
+
+            return false;
+        },
+        cancelItem: function(e) {
+            cinephileApp.util.router.navigate('movies', {
+                trigger: true
+            });
+        },
+        deleteItem: function(e) {
+            this.model.destroy({
+                success: function() {
+                    cinephileApp.util.router.navigate('movies', {
+                        trigger: true
+                    });
+                }
+            })
+        },
+
+        hide: function() {
+            this.$el.hide();
+        },
+
+        show: function() {
+            this.$el.show();
+        }
+    });
+
+    CinephileApp.View.ActorsList = Backbone.View.extend({
+        el: $("#actors-list"),
+        events: {
+
+        },
+
+        initialize: function() {},
+
+        render: function() {
+            var instance = this;
+
+            //Sync Data
+            cinephileApp.collection.actors.fetch();
+
+            //Caching the recent actors values
+            var actors = cinephileApp.collection.actors.models,
+                template = _.template($('#actors-list-template').html(), {
+                    data: actors
+                });
+
+            instance.$el.html(template);
+            this.show();
+        },
+
+        hide: function() {
+            this.$el.hide();
+        },
+
+        show: function() {
+            this.$el.show();
+        }
+    });
+
+    CinephileApp.View.ActorEdit = Backbone.View.extend({
+        el: $("#actor-edit"),
+        events: {
+            'submit .actors-edit-form': 'saveItem',
+            'click .delete': 'deleteItem',
+            'click .cancel': 'cancelItem'
+        },
+        model: {},
+
+        initialize: function() {
+            //Creo las instancias de las clases que necesito
+
+        },
+
+        render: function(id) {
+            var instance = this,
+                template,
+                actor;
+            cinephileApp.collection.actors.fetch();
+
+            if (id) {
+                //Caching the recent actors values
+                actor = cinephileApp.collection.actors.get(id);
+                this.model = actor;
+
+                this.model.fetch({
+                    success: function(data) {
+                        var template = _.template($('#actor-edit-template').html(), {
+                            data: data
+                        });
+                        instance.$el.html(template);
+                    }
+                });
+            } else {
+                actor = new CinephileApp.Model.Actor();
+                this.model = actor;
+                template = _.template($('#actor-edit-template').html(), {
+                    data: actor
+                });
+                this.$el.html(template);
+            }
+
+            this.show();
+        },
+
+        saveItem: function(e) {
+            var details = $(e.currentTarget).serializeObject();
+            if (details.cid) {
+                cinephileApp.collection.actors.add(this.model);
+            }
+
+            this.model.save(details, {
+                success: function(data) {
+                    cinephileApp.util.router.navigate('actors', {
+                        trigger: true
+                    });
+                }
+            });
+
+            return false;
+        },
+        cancelItem: function(e) {
+            cinephileApp.util.router.navigate('actors', {
+                trigger: true
+            });
+        },
+        deleteItem: function(e) {
+            this.model.destroy({
+                success: function() {
+                    cinephileApp.util.router.navigate('actors', {
+                        trigger: true
+                    });
+                }
+            })
+        },
+
+        hide: function() {
+            this.$el.hide();
+        },
+
+        show: function() {
+            this.$el.show();
+        }
+    });
+
 
     //Models
     CinephileApp.Model.Movie = Backbone.Model.extend({
         defaults: function() {
             return {
-                name: "Testing",
+                name: "",
                 releaseYear: "",
                 grossIncome: "",
                 directorName: "",
@@ -73,7 +375,21 @@ $(function() {
         //Another model custom methods
     });
 
-    //Model Collection
+    CinephileApp.Model.Actor = Backbone.Model.extend({
+        defaults: function() {
+            return {
+                firstName: "",
+                lastName: "",
+                gender: "",
+                birthDate: "",
+                movieCollection: ""
+            };
+        }
+
+        //Another model custom methods
+    });
+
+    //Movies Model Collection
     CinephileApp.Collection.Movies = Backbone.Collection.extend({
         model: CinephileApp.Model.Movie,
         localStorage: new Backbone.LocalStorage("bb-movies"),
@@ -82,278 +398,100 @@ $(function() {
         recents: function() {
             return this.slice(-10);
         }
+
     });
 
-    //TODO: Debe ir en el init del main app
-    cinephileApp.collection.movies = new CinephileApp.Collection.Movies();
+    //Actors Model Collection
+    CinephileApp.Collection.Actors = Backbone.Collection.extend({
+        model: CinephileApp.Model.Actor,
+        localStorage: new Backbone.LocalStorage("bb-actors"),
+
+        //Return the last 10 added movies 
+        recents: function() {
+            return this.slice(-10);
+        }
+
+    });
+
+
+
+
+
+    //Controller
+    CinephileApp.Controller.App = function() {
+
+        var api = {},
+            instance = this;
+
+        api.homeAction = function(options) {
+            api.showViewHelper('recentMovies');
+        }
+
+        api.moviesAction = function(options) {
+            api.showViewHelper('moviesList');
+        }
+
+        api.moviesEditAction = function(options) {
+            api.showViewHelper('movieEdit', options);
+        }
+
+        api.moviesNewAction = function(options) {
+            api.showViewHelper('movieEdit', options);
+        }
+
+        api.actorsAction = function(options) {
+            api.showViewHelper('actorsList');
+        }
+        api.actorsEditAction = function(options) {
+            api.showViewHelper('actorEdit', options);
+        }
+
+        api.actorsNewAction = function(options) {
+            api.showViewHelper('actorEdit', options);
+        }
+
+        api.showViewHelper = function(viewID, options) {
+            var viewInstances = cinephileApp.view;
+            if (!viewInstances[viewID]) {
+                var className = CinephileApp.Config.View[viewID].className;
+                viewInstances[viewID] = new CinephileApp.View[className]();
+            }
+
+            _.each(viewInstances, function(value, key) {
+                if (key !== viewID && key !== 'main') {
+                    value.hide();
+                }
+            })
+
+            viewInstances[viewID].render(options);
+        }
+
+        return api;
+    }
+
+    cinephileApp.init();
+
+    /* jQuery plugin to turn form into JSON 
+   http://stackoverflow.com/questions/1184624/convert-form-data-to-js-object-with-jquery */
+    $.fn.serializeObject = function() {
+        var o = {};
+        var a = this.serializeArray();
+        $.each(a, function() {
+            if (o[this.name] !== undefined) {
+                if (!o[this.name].push) {
+                    o[this.name] = [o[this.name]];
+                }
+                o[this.name].push(this.value || '');
+            } else {
+                o[this.name] = this.value || '';
+            }
+        });
+        return o;
+    };
 
     //This code is for testing
     // var testModel = new CinephileApp.Model.Movie();
     // cinephileApp.collection.movies.add(testModel);
     // testModel.save();
-
-
-
-
-    //Make Application
-    // var AppView = Backbone.View.extend({
-    //     el: $("#todoapp"),
-    //     statsTemplate: _.template($("#stats-template").html()),
-    //     events: {
-    //         "keypress #new-todo": "createOnEnter",
-    //         "click #clear-completed": "clearCompleted",
-    //         "click #toggle-all": "toggleAllComplete"
-    //     },
-
-    //     initialize: function() {
-    //         this.input = this.$("#new-todo");
-    //         this.allCheckbox = this.$("#toggle-all")[0];
-
-    //         this.listenTo(Todos, "add", this.addOne);
-    //         this.listenTo(Todos, "reset", this.addAll);
-    //         this.listenTo(Todos, "all", this.render);
-
-    //         this.footer = this.$("footer");
-    //         this.main = $("#main");
-
-    //         Todos.fetch();
-    //     },
-
-    //     render: function() {
-    //         var done = Todos.done().length;
-    //         var remaining = Todos.remaining().length;
-
-    //         if (Todos.length) {
-    //             this.main.show();
-    //             this.footer.show();
-    //             this.footer.html(this.statsTemplate({
-    //                 done: done,
-    //                 remaining: remaining
-    //             }));
-    //         } else {
-    //             this.main.hide();
-    //             this.footer.hide();
-    //         }
-
-    //         this.allCheckbox.checked = !remaining;
-    //     },
-
-    //     addOne: function(todo) {
-    //         var view = new TodoView({
-    //             model: todo
-    //         });
-    //         this.$("#todo-list").append(view.render().el);
-    //     },
-    //     addAll: function() {
-    //         Todos.each(this.addOne, this);
-    //     },
-
-    //     createOnEnter: function(e) {
-    //         if (e.keyCode != 13) return;
-    //         if (!this.input.val()) return;
-
-    //         Todos.create({
-    //             title: this.input.val()
-    //         });
-    //         this.input.val("");
-    //     },
-    //     clearCompleted: function() {
-    //         _.invoke(Todos.done(), "destroy");
-    //         return false;
-    //     },
-
-    //     toggleAllComplete: function() {
-    //         var done = this.allCheckbox.checked;
-    //         Todos.each(function(todo) {
-    //             todo.save({
-    //                 "done": done
-    //             });
-    //         });
-    //     }
-
-    // });
-
-
-
-
-    /* Router */
-    var Router = Backbone.Router.extend({
-        routes: {
-            "": "home"
-        }
-    });
-
-    var router = new Router;
-    router.on('route:home', function() {
-        cinephileApp.view.main = new CinephileApp.View.Main();
-        cinephileApp.view.main.render();
-    })
-
-    Backbone.history.start();
-
-    //Define Model
-    // var Todo = Backbone.Model.extend({
-    //     defaults: function() {
-    //         return {
-    //             title: "no title...",
-    //             order: Todos.nextOrder(),
-    //             done: false
-    //         };
-    //     },
-    //     toggle: function() {
-    //         this.save({
-    //             done: !this.get("done")
-    //         });
-    //     }
-    // });
-
-    //Model Collection
-    // var TodoList = Backbone.Collection.extend({
-    //     model: Todo,
-    //     localStorage: new Backbone.LocalStorage("todos-backbone"),
-    //     done: function() {
-    //         return this.where({
-    //             done: true
-    //         });
-    //     },
-    //     remaining: function() {
-    //         return this.without.apply(this, this.done());
-    //     },
-    //     nextOrder: function() {
-    //         if (!this.length) return 1;
-    //         return this.last().get("order") + 1;
-    //     },
-    //     comparator: 'order'
-    // });
-    // var Todos = new TodoList;
-
-    //Model View & event action
-    // var TodoView = Backbone.View.extend({
-    //     tagName: "li",
-    //     template: _.template($("#item-template").html()),
-    //     events: {
-    //         "click .toggle": "toggleDone",
-    //         "dblclick .view": "edit",
-    //         "click a.destroy": "clear",
-    //         "keypress .edit": "updateOnEnter",
-    //         "blur .edit": "close"
-    //     },
-    //     initialize: function() {
-    //         this.listenTo(this.model, "change", this.render);
-    //         this.listenTo(this.model, "destroy", this.remove);
-    //     },
-    //     render: function() {
-    //         this.$el.html(this.template(this.model.toJSON()));
-    //         this.$el.toggleClass("done", this.model.get("done"));
-    //         this.input = this.$(".edit");
-    //         return this;
-    //     },
-    //     toggleDone: function() {
-    //         this.model.toggle();
-    //     },
-    //     edit: function() {
-    //         this.$el.addClass("editing");
-    //         this.input.focus();
-    //     },
-    //     close: function() {
-    //         var value = this.input.val();
-    //         if (!value) {
-    //             this.clear();
-    //         } else {
-    //             this.model.save({
-    //                 title: value
-    //             });
-    //             this.$el.removeClass("editing");
-    //         }
-    //     },
-    //     updateOnEnter: function(e) {
-    //         if (e.keyCode == 13) this.close();
-    //     },
-    //     clear: function() {
-    //         this.model.destroy();
-    //     }
-
-    // });
-
-    //Make Application
-    // var AppView = Backbone.View.extend({
-    //     el: $("#todoapp"),
-    //     statsTemplate: _.template($("#stats-template").html()),
-    //     events: {
-    //         "keypress #new-todo": "createOnEnter",
-    //         "click #clear-completed": "clearCompleted",
-    //         "click #toggle-all": "toggleAllComplete"
-    //     },
-
-    //     initialize: function() {
-    //         this.input = this.$("#new-todo");
-    //         this.allCheckbox = this.$("#toggle-all")[0];
-
-    //         this.listenTo(Todos, "add", this.addOne);
-    //         this.listenTo(Todos, "reset", this.addAll);
-    //         this.listenTo(Todos, "all", this.render);
-
-    //         this.footer = this.$("footer");
-    //         this.main = $("#main");
-
-    //         Todos.fetch();
-    //     },
-
-    //     render: function() {
-    //         var done = Todos.done().length;
-    //         var remaining = Todos.remaining().length;
-
-    //         if (Todos.length) {
-    //             this.main.show();
-    //             this.footer.show();
-    //             this.footer.html(this.statsTemplate({
-    //                 done: done,
-    //                 remaining: remaining
-    //             }));
-    //         } else {
-    //             this.main.hide();
-    //             this.footer.hide();
-    //         }
-
-    //         this.allCheckbox.checked = !remaining;
-    //     },
-
-    //     addOne: function(todo) {
-    //         var view = new TodoView({
-    //             model: todo
-    //         });
-    //         this.$("#todo-list").append(view.render().el);
-    //     },
-    //     addAll: function() {
-    //         Todos.each(this.addOne, this);
-    //     },
-
-    //     createOnEnter: function(e) {
-    //         if (e.keyCode != 13) return;
-    //         if (!this.input.val()) return;
-
-    //         Todos.create({
-    //             title: this.input.val()
-    //         });
-    //         this.input.val("");
-    //     },
-    //     clearCompleted: function() {
-    //         _.invoke(Todos.done(), "destroy");
-    //         return false;
-    //     },
-
-    //     toggleAllComplete: function() {
-    //         var done = this.allCheckbox.checked;
-    //         Todos.each(function(todo) {
-    //             todo.save({
-    //                 "done": done
-    //             });
-    //         });
-    //     }
-
-    // });
-    // var App = new AppView;
-
-
 
 }());

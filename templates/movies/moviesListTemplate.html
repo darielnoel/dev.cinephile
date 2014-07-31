@@ -1,0 +1,30 @@
+<header>
+  <h1>Movies</h1>
+</header>
+<a href="#/movies/new" class="btn btn-primary">New</a>
+<hr />
+<table class="table striped">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Release Year</th>
+      <th>Gross Income</th>
+      <th>Director Name</th>
+      <th>rating</th>
+      <th>Genere</th>
+    </tr>
+  </thead>
+  <tbody>
+  <% _.each(data, function(item) { %>
+    <tr>
+      <td><%= item.get('name') %></td>
+      <td><%= item.get('releaseYear') %></td>
+      <td><%= item.get('grossIncome') %></td>
+      <td><%= item.get('directorName') %></td>
+      <td><%= item.get('rating') %></td>
+      <td><%= item.get('genere') %></td>
+      <td><a class="btn" href="#/movies/edit/<%= item.id %>">Edit</a></td>
+    </tr>
+  <% }); %>
+  </tbody>
+</table>

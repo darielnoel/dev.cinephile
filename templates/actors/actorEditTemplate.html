@@ -1,0 +1,46 @@
+<div class="row">
+<legend><%= data ? 'Edit Actor' : 'New Actor' %></legend>
+<div class="col-lg-4">
+    <form role="form" class="actors-edit-form form-horizontal">
+        <div class="form-group">
+            <label for="firstName" class="col-sm-2 control-label">First Name</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" name="firstName" value="<%= data.get('firstName') %>" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="lastName" class="col-sm-2 control-label">Last Name</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" name="lastName" value="<%= data.get('lastName') %>" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="gender" class="col-sm-2 control-label">Gender</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" name="gender" value="<%= data.get('gender') %>" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="birthDate" class="col-sm-2 control-label">Birth Date</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" name="birthDate" value="<%= data.get('birthDate') %>" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="movieCollection" class="col-sm-2 control-label">Movies</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" name="movieCollection" value="<%= data.get('movieCollection') %>" />
+            </div>
+        </div>
+        <input type="submit" class="btn" value="<%= data.get('firstName') ? 'Update' : 'Create' %>" />
+        <% if (data.get('name')) { %>
+          
+          <input type="button" class="btn btn-danger delete" value="Delete" /> 
+        <% }; %>
+        <input type="hidden" name="cid" value="<%= data.cid %>" />
+        <input type="button" class="btn cancel" value="Back" />
+    </form>
+</div>
+<div class="col-lg-8 actor-actor-list">
+</div>
+</div>

@@ -1,27 +1,24 @@
-<!DOCTYPE html>
-<html lang="en">
-
+<!doctype html>
+<!--[if lt IE 7]> <html class="no-js ie6 oldie" lang="en"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js ie7 oldie" lang="en"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js ie8 oldie" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
 <head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="">
-    <meta name="author" content="">
+	<title></title>
+	<meta name="description" content="">
+	<meta name="author" content="">
 
-    <title>Cinephile</title>
-
+	<meta name="viewport" content="width=device-width,initial-scale=1">
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" type="text/css" href="http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.2.0/css/bootstrap.min.css">
+	
+  <link rel="stylesheet" href="css/styles.css">
 
-    <!-- Custom CSS -->
-    <link href="assets/styles/theme/simple-sidebar.css" rel="stylesheet">
-
-    <link href="assets/styles/index.css" rel="stylesheet">
-
-
+	<script data-main="js/main" src="js/libs/require/require.js"></script>
 </head>
-
 <body>
     <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
         <div class="container">
@@ -99,212 +96,5 @@
         <p class="text-muted">Copyright © Cinephile 2014</p>
       </div>
     </div>
-    <!-- Templates -->
-    <script type="text/template" id="movies-thumbails-template">
-        <header>
-          <h1>Recent Movies</h1>
-        </header>
-        <% _.each(data, function(item) { %>
-
-            <div class="col-lg-3 col-md-4 col-xs-6 thumb">
-                    <a class="thumbnail" href="#/movies/detail/<%= item.id %>">
-                        <img class="img-responsive" src="http://placehold.it/400x300" alt="">
-                    </a>
-                    <p><%= item.get('name')%></p>
-            </div>
-        <% }); %>
-    </script> 
-
-    <script type="text/template" id="movies-list-template">
-        <header>
-          <h1>Movies</h1>
-        </header>
-        <a href="#/movies/new" class="btn btn-primary">New</a>
-        <hr />
-        <table class="table striped">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Release Year</th>
-              <th>Gross Income</th>
-              <th>Director Name</th>
-              <th>rating</th>
-              <th>Genere</th>
-              <th>Actors</th>
-            </tr>
-          </thead>
-          <tbody>
-          <% _.each(data, function(item) { %>
-            <tr>
-              <td><%= item.get('name') %></td>
-              <td><%= item.get('releaseYear') %></td>
-              <td><%= item.get('grossIncome') %></td>
-              <td><%= item.get('directorName') %></td>
-              <td><%= item.get('rating') %></td>
-              <td><%= item.get('genere') %></td>
-              <td><%= item.get('actorCollection') %></td>
-              <td><a class="btn" href="#/movies/edit/<%= item.id %>">Edit</a></td>
-            </tr>
-          <% }); %>
-          </tbody>
-        </table>
-    </script>
-
-    <script type="text/template" id="movie-edit-template">
-      <div class="row">
-        <legend><%= data ? 'Edit Movie' : 'New Movie' %></legend>
-        <div class="col-lg-4">
-            <form role="form" class="movies-edit-form form-horizontal">
-                <div class="form-group">
-                    <label for="name" class="col-sm-2 control-label">Name</label>
-                    <div class="col-sm-10">
-                        <input type="text" class="form-control" name="name" value="<%= data.get('name') %>" />
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="releaseYear" class="col-sm-2 control-label">Release Year</label>
-                    <div class="col-sm-10">
-                        <input type="text" class="form-control" name="releaseYear" value="<%= data.get('releaseYear') %>" />
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="grossIncome" class="col-sm-2 control-label">Gross Income</label>
-                    <div class="col-sm-10">
-                        <input type="text" class="form-control" name="grossIncome" value="<%= data.get('grossIncome') %>" />
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="directorName" class="col-sm-2 control-label">Director Name</label>
-                    <div class="col-sm-10">
-                        <input type="text" class="form-control" name="directorName" value="<%= data.get('directorName') %>" />
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="rating" class="col-sm-2 control-label">Rating</label>
-                    <div class="col-sm-10">
-                        <input type="text" class="form-control" name="rating" value="<%= data.get('rating') %>" />
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="genere" class="col-sm-2 control-label">Genere</label>
-                    <div class="col-sm-10">
-                        <input type="text" class="form-control" name="genere" value="<%= data.get('genere') %>" />
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="actorCollection" class="col-sm-2 control-label">Actors</label>
-                    <div class="col-sm-10">
-                        <input type="text" class="form-control" name="actorCollection" value="<%= data.get('actorCollection') %>" />
-                    </div>
-                </div>
-                <input type="submit" class="btn" value="<%= data.get('name') ? 'Update' : 'Create' %>" />
-                <% if (data.get('name')) { %>
-                  
-                  <input type="button" class="btn btn-danger delete" value="Delete" /> 
-                <% }; %>
-                <input type="hidden" name="cid" value="<%= data.cid %>" />
-                <input type="button" class="btn cancel" value="Back" />
-            </form>
-        </div>
-        <div class="col-lg-8 movie-actor-list">
-        </div>
-      </div>
-    </script>
-
-    <script type="text/template" id="actors-list-template">
-        <header>
-          <h1>Actors</h1>
-        </header>
-        <a href="#/actors/new" class="btn btn-primary">New</a>
-        <hr />
-        <table class="table striped">
-          <thead>
-            <tr>
-              <th>First Name</th>
-              <th>Last Name</th>
-              <th>Gender</th>
-              <th>Birth Date</th>
-              <th>Movies</th>
-            </tr>
-          </thead>
-          <tbody>
-          <% _.each(data, function(item) { %>
-            <tr>
-              <td><%= item.get('firstName') %></td>
-              <td><%= item.get('lastName') %></td>
-              <td><%= item.get('gender') %></td>
-              <td><%= item.get('directorName') %></td>
-              <td><%= item.get('birthDate') %></td>
-              <td><%= item.get('movieCollection') %></td>
-              <td><a class="btn" href="#/actors/edit/<%= item.id %>">Edit</a></td>
-            </tr>
-          <% }); %>
-          </tbody>
-        </table>
-    </script>
-
-    <script type="text/template" id="actor-edit-template">
-      <div class="row">
-        <legend><%= data ? 'Edit Actor' : 'New Actor' %></legend>
-        <div class="col-lg-4">
-            <form role="form" class="actors-edit-form form-horizontal">
-                <div class="form-group">
-                    <label for="firstName" class="col-sm-2 control-label">First Name</label>
-                    <div class="col-sm-10">
-                        <input type="text" class="form-control" name="firstName" value="<%= data.get('firstName') %>" />
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="lastName" class="col-sm-2 control-label">Last Name</label>
-                    <div class="col-sm-10">
-                        <input type="text" class="form-control" name="lastName" value="<%= data.get('lastName') %>" />
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="gender" class="col-sm-2 control-label">Gender</label>
-                    <div class="col-sm-10">
-                        <input type="text" class="form-control" name="gender" value="<%= data.get('gender') %>" />
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="birthDate" class="col-sm-2 control-label">Birth Date</label>
-                    <div class="col-sm-10">
-                        <input type="text" class="form-control" name="birthDate" value="<%= data.get('birthDate') %>" />
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="movieCollection" class="col-sm-2 control-label">Movies</label>
-                    <div class="col-sm-10">
-                        <input type="text" class="form-control" name="movieCollection" value="<%= data.get('movieCollection') %>" />
-                    </div>
-                </div>
-                <input type="submit" class="btn" value="<%= data.get('name') ? 'Update' : 'Create' %>" />
-                <% if (data.get('name')) { %>
-                  
-                  <input type="button" class="btn btn-danger delete" value="Delete" /> 
-                <% }; %>
-                <input type="hidden" name="cid" value="<%= data.cid %>" />
-                <input type="button" class="btn cancel" value="Back" />
-            </form>
-        </div>
-        <div class="col-lg-8 actor-actor-list">
-        </div>
-      </div>
-    </script>
-
-
-
-
-      <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-      <script src="http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.2/underscore-min.js"></script>
-
-      <script src="http://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.0.0/backbone.js"></script>
-      <script src="http://cdnjs.cloudflare.com/ajax/libs/backbone-localstorage.js/1.1.9/backbone.localStorage-min.js"></script>
-
-    <script src="http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.2.0/js/bootstrap.min.js"></script>
-      <script src="config/app.js"></script>
-      <script src="scripts/app.js"></script>
-
 </body>
-
 </html>

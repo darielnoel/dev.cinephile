@@ -1,0 +1,11 @@
+<header>
+  <h1>Recent Movies</h1>
+</header>
+<% _.each(data, function(item) { %>
+    <div class="col-lg-3 col-md-4 col-xs-6 thumb">
+            <a class="thumbnail" href="#/movies/detail/<%= item.id %>">
+                <img class="img-responsive" src="http://placehold.it/400x300" alt="">
+            </a>
+            <p><%= item.get('name')%></p>
+    </div>
+<% }); %>

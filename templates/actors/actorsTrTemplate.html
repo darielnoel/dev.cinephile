@@ -1,12 +1,20 @@
 <tr>
-  <td><%= data.get('firstName') %></td>
-  <td><%= data.get('lastName') %></td>
-  <td><%= data.get('gender') %></td>
-  <td><%= data.get('birthDate') %></td>
-  <td>
-    <button type="button" class="btn btn-default btn-sm delete-actor-from-movie" data-id="<%= data.id %>">
-      <span class="glyphicon glyphicon-trash"></span>
-    </button>
-  </td>
+    <td>
+        <%=data.get( 'firstName') %>
+    </td>
+    <td>
+        <%=data.get( 'lastName') %>
+    </td>
+    <td>
+        <%=data.get( 'gender') %>
+    </td>
+    <td>
+        <%=data.get( 'birthDate') %>
+    </td>
+    <td>
+        <button type="button" class="btn btn-default btn-sm delete-actor-from-movie" data-id="<%= data.id %>">
+            <span class="glyphicon glyphicon-trash"></span>
+        </button>
+    </td>
 
-</tr>  
+</tr>

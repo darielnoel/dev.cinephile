@@ -1,33 +1,41 @@
 <header>
-  <h1>Actors</h1>
+    <h1>Actors</h1>
 </header>
 <a href="#/actors/new" class="btn btn-primary">New</a>
 <hr />
 <table class="table striped">
-  <thead>
-    <tr>
-      <th>First Name</th>
-      <th>Last Name</th>
-      <th>Gender</th>
-      <th>Birth Date</th>
-    </tr>
-  </thead>
-  <tbody>
-  <% _.each(data, function(item) { %>
-    <tr>
-      <td><%= item.get('firstName') %></td>
-      <td><%= item.get('lastName') %></td>
-      <td><%= item.get('gender') %></td>
-      <td><%= item.get('birthDate') %></td>
-      <td>
-        <a class="btn btn-default btn-sm" role="button" href="#/actors/edit/<%= item.id %>">
-          <span class="glyphicon glyphicon-edit"></span>
-        </a>
-        <a class="btn btn-default btn-sm" role="button" href="#/actors/detail/<%= item.id %>">
-          <span class="glyphicon glyphicon-eye-open"></span>
-        </a>
-      </td>
-    </tr>
-  <% }); %>
-  </tbody>
+    <thead>
+        <tr>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Gender</th>
+            <th>Birth Date</th>
+        </tr>
+    </thead>
+    <tbody>
+        <% _.each(data, function(item) { %>
+            <tr>
+                <td>
+                    <%=item.get('firstName') %>
+                </td>
+                <td>
+                    <%=item.get('lastName') %>
+                </td>
+                <td>
+                    <%=item.get('gender') %>
+                </td>
+                <td>
+                    <%=item.get('birthDate') %>
+                </td>
+                <td>
+                    <a class="btn btn-default btn-sm" role="button" href="#/actors/edit/<%= item.id %>">
+                        <span class="glyphicon glyphicon-edit"></span>
+                    </a>
+                    <a class="btn btn-default btn-sm" role="button" href="#/actors/detail/<%= item.id %>">
+                        <span class="glyphicon glyphicon-eye-open"></span>
+                    </a>
+                </td>
+            </tr>
+            <% }); %>
+    </tbody>
 </table>

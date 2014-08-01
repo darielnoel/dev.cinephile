@@ -1,0 +1,39 @@
+<header>
+  <h3>Movies</h3>
+</header>
+<hr />
+<table class="table striped">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Release Year</th>
+      <th>Gross Income</th>
+      <th>Director Name</th>
+      <th>rating</th>
+      <th>Genere</th>
+    </tr>
+  </thead>
+  <tbody>
+  <% _.each(data, function(item) { %>
+    <tr>
+      <td><%= item.get('name') %></td>
+      <td><%= item.get('releaseYear') %></td>
+      <td><%= item.get('grossIncome') %></td>
+      <td><%= item.get('directorName') %></td>
+      <td>
+                <input class="rating form-control" data-show-clear=false data-show-caption=false data-size="xs" data-min="0" data-max="5" data-step="1" data-stars=5 value="<%= item.get('rating') %>" data-readonly="true">
+      </td>
+      <td><%= item.get('genere') %></td>
+      <td>
+
+        <a class="btn btn-default btn-sm" role="button" href="#/movies/edit/<%= item.id %>">
+        	<span class="glyphicon glyphicon-edit"></span>
+        </a>
+        <a class="btn btn-default btn-sm" role="button" href="#/movies/detail/<%= item.id %>">
+        	<span class="glyphicon glyphicon-eye-open"></span>
+        </a>
+      </td>
+    </tr>
+  <% }); %>
+  </tbody>
+</table>

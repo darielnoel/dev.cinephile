@@ -11,9 +11,12 @@ define([
     'views/movies/MovieDetailView',
     'views/actors/ActorsListView',
     'views/actors/ActorEditView',
-    'views/actors/ActorDetailView'
+    'views/actors/ActorDetailView',
+    'views/app/AppSearchBoxView',
+    'views/search/SearchMoviesView',
+    'views/search/SearchActorsView',
 
-], function($, _, Backbone, MoviesCollection, ActorsCollection, RecentMoviesView, MoviesListView, MovieEditView, MovieDetailView, ActorsListView, ActorEditView, ActorDetailView) {
+], function($, _, Backbone, MoviesCollection, ActorsCollection, RecentMoviesView, MoviesListView, MovieEditView, MovieDetailView, ActorsListView, ActorEditView, ActorDetailView, AppSearchBoxView, SearchMoviesView, SearchActorsView) {
 
     var App = {
         Router: {},
@@ -24,7 +27,10 @@ define([
             'MovieDetailView': MovieDetailView,
             'ActorsListView': ActorsListView,
             'ActorEditView': ActorEditView,
-            'ActorDetailView': ActorDetailView
+            'ActorDetailView': ActorDetailView,
+            'SearchMoviesView': SearchMoviesView,
+            'SearchActorsView': SearchActorsView,
+
         },
         Config: {},
         Instances: {
@@ -43,6 +49,7 @@ define([
             "actors/edit/:id": "actorsEditAction",
             "actors/new": "actorsNewAction",
             "actors/detail/:id": "actorsDetailAction",
+            "search/:query": "searchAction",
         }
     });
 
@@ -51,6 +58,13 @@ define([
         var app_router = new App.Router(),
             movies = new MoviesCollection(),
             actors = new ActorsCollection();
+
+        App.Instances.views.AppSearchBoxView = new AppSearchBoxView({
+            router: app_router
+        });
+
+        App.Instances.views.AppSearchBoxView.render();
+        
 
         app_router.on('route:homeAction', function() {
             showViewHelper('RecentMoviesView', {
@@ -123,6 +137,33 @@ define([
             });
         });
 
+        app_router.on('route:searchAction', function(options) {
+            console.log('Search Action');
+            console.log(options);
+
+            var queryArray = options.split('&'),
+                category = queryArray[0];
+                query = queryArray[1],
+                openViewID = 'SearchMoviesView';
+
+            if(category === 'actors'){
+                openViewID = 'SearchActorsView';
+            }
+
+            showViewHelper(openViewID, {
+                query: query,
+                moviesCollection: movies,
+                actorsCollection: actors,
+                router: app_router
+            });
+
+            App.Instances.views.AppSearchBoxView.syncUI({
+                query: query,
+                selected: category
+            });  
+        });
+        
+
         Backbone.history.start();
     };
 
@@ -133,7 +174,7 @@ define([
         }
 
         _.each(viewInstances, function(value, key) {
-            if (key !== viewID && key !== 'main') {
+            if (key !== viewID && key !== 'AppSearchBoxView') {
                 value.hide();
             }
         })

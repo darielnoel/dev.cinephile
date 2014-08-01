@@ -13,6 +13,20 @@ define([
         //Return the last 10 added Actors 
         recents: function() {
             return this.models.slice(-10);
+        },
+
+        getByNameSubstr: function(NameSubstr){
+            var actorsCollection = this,
+                foundedActors;
+            
+            if(!NameSubstr){
+                foundedActors = actorsCollection.models;
+            } else{
+                foundedActors = actorsCollection.filter(function(item){
+                    return item.get('firstName').indexOf(NameSubstr) >= 0;
+                });                
+            }    
+            return foundedActors;
         }
 
     });

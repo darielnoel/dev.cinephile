@@ -29,6 +29,20 @@ define([
             });
 
             return foundedMovies;
+        },
+
+        getByNameSubstr: function(NameSubstr){
+            var moviesCollection = this,
+                foundedMovies;
+            
+            if(!NameSubstr){
+                foundedMovies = moviesCollection.models;
+            } else{
+                foundedMovies = moviesCollection.filter(function(item){
+                    return item.get('name').indexOf(NameSubstr) >= 0;
+                });                
+            }    
+            return foundedMovies;
         }
 
     });

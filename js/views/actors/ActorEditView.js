@@ -70,8 +70,40 @@ define([
                 });
                 viewSrcNode.html(template);
             }
-
+            viewSrcNode.find('#files').change($.proxy(instance.handleFileSelect, instance));
             instance.show();
+        },
+
+        handleFileSelect: function(evt) {
+            var instance = this,
+                viewSrcNode = instance.$el;
+
+            console.log('handleFileSelect');
+            var files = evt.target.files; // FileList object
+
+            // Loop through the FileList and render image files as thumbnails.
+            for (var i = 0, f; f = files[i]; i++) {
+
+              // Only process image files.
+              if (!f.type.match('image.*')) {
+                continue;
+              }
+
+              var reader = new FileReader();
+
+              // Closure to capture the file information.
+              reader.onload = (function(theFile) {
+                return function(e) {
+                  // Render thumbnail.
+                  console.log(viewSrcNode.find('#store-image img'));
+                  viewSrcNode.find('#store-image img').attr('src', e.target.result);
+                  instance.model.set('image', e.target.result);
+                };
+              })(f);
+
+              // Read in the image file as a data URL.
+              reader.readAsDataURL(f);
+            }
         },
 
         /**

@@ -14,7 +14,8 @@ define([
                 lastName: "",
                 gender: "",
                 birthDate: "",
-                movieCollection: ""
+                movieCollection: "",
+                image:""
             };
         }
     });

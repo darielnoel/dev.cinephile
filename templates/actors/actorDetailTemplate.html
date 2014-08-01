@@ -26,6 +26,11 @@
                     <input type="text" class="form-control" name="birthDate" value="<%= data.get('birthDate') %>" disabled="true" />
                 </div>
             </div>
+            <div class="col-lg-12 col-md-12 col-xs-12 thumb">
+                    <span id="store-image" class="thumbnail">
+                        <img class="img-responsive" src="<%= data.get('image') ? data.get('image') : 'http://placehold.it/400x300' %>" alt="">
+                    </span>
+            </div>
             <input type="hidden" name="cid" value="<%= data.cid %>" />
             <input type="button" class="btn cancel" value="Back" />
         </form>

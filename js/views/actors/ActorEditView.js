@@ -7,6 +7,10 @@ define([
     'text!templates/actors/actorEditTemplate.html',
 ], function($, jquerySerialize, _, Backbone, ActorModel, actorEditTemplate) {
 
+    //-------------------------------------------------------
+    // Actor Edit View
+    //-------------------------------------------------------
+
     var ActorEditView = Backbone.View.extend({
         el: $("#actor-edit"),
         events: {
@@ -16,6 +20,12 @@ define([
         },
         model: {},
 
+        /**
+         * Description
+         * @method initialize
+         * @param {} options
+         * @return
+         */
         initialize: function(options) {
             var instance = this;
 
@@ -24,11 +34,18 @@ define([
             instance.router = options.router;
         },
 
+        /**
+         * Description
+         * @method render
+         * @param {} options
+         * @return
+         */
         render: function(options) {
             var instance = this,
                 template,
                 actor,
-                id = options.id;
+                id = options.id,
+                viewSrcNode = instance.$el;
             instance.actorsCollection.fetch();
 
             if (id) {
@@ -37,11 +54,12 @@ define([
                 instance.model = actor;
 
                 instance.model.fetch({
+
                     success: function(data) {
                         var template = _.template(actorEditTemplate, {
                             data: data
                         });
-                        instance.$el.html(template);
+                        viewSrcNode.html(template);
                     }
                 });
             } else {
@@ -50,12 +68,18 @@ define([
                 template = _.template(actorEditTemplate, {
                     data: actor
                 });
-                instance.$el.html(template);
+                viewSrcNode.html(template);
             }
 
             instance.show();
         },
 
+        /**
+         * Save the item changes to the models
+         * @method saveItem
+         * @param {} e
+         * @return Literal
+         */
         saveItem: function(e) {
             var instance = this,
                 details = $(e.currentTarget).serializeObject();
@@ -74,11 +98,25 @@ define([
 
             return false;
         },
+
+        /**
+         * Cancel the Edition
+         * @method cancelItem
+         * @param {} e
+         * @return
+         */
         cancelItem: function(e) {
             this.router.navigate('actors', {
                 trigger: true
             });
         },
+
+        /**
+         * Description
+         * @method deleteItem
+         * @param {} e
+         * @return
+         */
         deleteItem: function(e) {
             var instance = this;
 
@@ -91,10 +129,20 @@ define([
             })
         },
 
+        /**
+         * Description
+         * @method hide
+         * @return
+         */
         hide: function() {
             this.$el.hide();
         },
 
+        /**
+         * Description
+         * @method show
+         * @return
+         */
         show: function() {
             this.$el.show();
         }

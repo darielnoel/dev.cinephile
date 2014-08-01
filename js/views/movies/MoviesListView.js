@@ -6,39 +6,64 @@ define([
     'text!templates/movies/moviesListTemplate.html'
 ], function($, jqueyStarRating, _, Backbone, moviesListTemplate) {
 
+    //-------------------------------------------------------
+    // Movie List View
+    //-------------------------------------------------------
+
     var MoviesListView = Backbone.View.extend({
         el: $("#movies-list"),
         events: {
 
         },
 
+        /**
+         * Description
+         * @method initialize
+         * @param {} options
+         * @return
+         */
         initialize: function(options) {
             this.moviesCollection = options.moviesCollection;
         },
 
+        /**
+         * Description
+         * @method render
+         * @return
+         */
         render: function() {
-            var instance = this;
-
             //Sync Data
             this.moviesCollection.fetch();
 
-            //Caching the recent movies values
-            var movies = this.moviesCollection.models,
+            var instance = this,
+                movies = instance.moviesCollection.models,
                 template = _.template(moviesListTemplate, {
                     data: movies
-                });
+                }),
+                viewSrcNode = instance.$el,
+                ratingNode;
 
-            instance.$el.html(template);
+            viewSrcNode.html(template);
 
-            var ratingNode = instance.$el.find('.rating');
+            ratingNode = viewSrcNode.find('.rating');
             ratingNode.rating();
-            this.show();
+            instance.show();
         },
 
+        /**
+         * Description
+         * @method hide
+         * @return
+         */
         hide: function() {
             this.$el.hide();
         },
 
+        /**
+         * Description
+         * @method show
+         * @return
+         */
         show: function() {
             this.$el.show();
         }

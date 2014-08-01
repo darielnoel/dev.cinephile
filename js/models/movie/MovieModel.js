@@ -3,24 +3,66 @@ define([
     'backbone'
 ], function(_, Backbone) {
 
+    //-------------------------------------------------------
+    // Statics vars
+    //-------------------------------------------------------
+    
+    var RATES_TOTAL_VOTES = 'ratesTotalVotes',
+        RATES_COUNT = 'ratesCount';
+
+
+    //-------------------------------------------------------
+    // Movie Model
+    //-------------------------------------------------------
+
     var MovieModel = Backbone.Model.extend({
-        //Custom getter
-        get: function (attr) {
-            if (typeof this[attr] == 'function') {
-              return this[attr]();
+
+        /**
+         * Custom getter
+         * @method get
+         * @param {} attr
+         * @return CallExpression
+         */
+        get: function(attr) {
+            var instance = this;
+
+            if (typeof instance[attr] == 'function') {
+                return instance[attr]();
             }
-            return Backbone.Model.prototype.get.call(this, attr);
-        },
-        rating: function() {
-            return parseInt(this.get('ratesTotalVotes'))/parseInt(this.get('ratesCount'));
+            return Backbone.Model.prototype.get.call(instance, attr);
         },
 
-        setRating: function(value){
-            this.set('ratesCount', parseInt(this.get('ratesCount')) + 1);
-            this.set('ratesTotalVotes', parseInt(this.get('ratesTotalVotes')) + parseInt(value));
+        /**
+         * Custom rating getter
+         * @method rating
+         * @return BinaryExpression
+         */
+        rating: function() {
+            var instance = this;
+            return parseInt(instance.get(RATES_TOTAL_VOTES)) / parseInt(instance.get(RATES_COUNT));
         },
+
+        /**
+         * Custom rating setter
+         * @method setRating
+         * @param {} value
+         * @return
+         */
+        setRating: function(value) {
+            var instance = this;
+
+            instance.set(RATES_COUNT, parseInt(instance.get(RATES_COUNT)) + 1);
+            instance.set(RATES_TOTAL_VOTES, parseInt(instance.get(RATES_TOTAL_VOTES)) + parseInt(value));
+        },
+
         ratesCount: 1,
         ratesTotalVotes: 5,
+
+        /**
+         * Description
+         * @method defaults
+         * @return ObjectExpression
+         */
         defaults: function() {
             return {
                 name: "",

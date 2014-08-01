@@ -18,6 +18,10 @@ define([
 
 ], function($, _, Backbone, MoviesCollection, ActorsCollection, RecentMoviesView, MoviesListView, MovieEditView, MovieDetailView, ActorsListView, ActorEditView, ActorDetailView, AppSearchBoxView, SearchMoviesView, SearchActorsView) {
 
+    //-------------------------------------------------------
+    // App Namespaces
+    //-------------------------------------------------------
+
     var App = {
         Router: {},
         Views: {
@@ -38,6 +42,10 @@ define([
         }
     }
 
+    //-------------------------------------------------------
+    // Backbone Router Definition
+    //-------------------------------------------------------
+
     App.Router = Backbone.Router.extend({
         routes: {
             "": "homeAction",
@@ -53,100 +61,106 @@ define([
         }
     });
 
+    /**
+     * The starting point function
+     * @method initialize
+     * @return
+     */
     var initialize = function() {
 
-        var app_router = new App.Router(),
+        var appRouter = new App.Router(),
             movies = new MoviesCollection(),
             actors = new ActorsCollection();
 
         App.Instances.views.AppSearchBoxView = new AppSearchBoxView({
-            router: app_router
+            router: appRouter
         });
 
         App.Instances.views.AppSearchBoxView.render();
-        
 
-        app_router.on('route:homeAction', function() {
+        //-------------------------------------------------------
+        // Actions Handles
+        //-------------------------------------------------------
+
+        appRouter.on('route:homeAction', function() {
             showViewHelper('RecentMoviesView', {
                 moviesCollection: movies
             });
         });
 
-        app_router.on('route:moviesAction', function() {
+        appRouter.on('route:moviesAction', function() {
             showViewHelper('MoviesListView', {
                 moviesCollection: movies,
                 actorsCollection: actors
             });
         });
 
-        app_router.on('route:moviesEditAction', function(options) {
+        appRouter.on('route:moviesEditAction', function(options) {
             showViewHelper('MovieEditView', {
                 id: options,
                 moviesCollection: movies,
                 actorsCollection: actors,
-                router: app_router
+                router: appRouter
             });
         });
 
-        app_router.on('route:moviesNewAction', function(options) {
+        appRouter.on('route:moviesNewAction', function(options) {
             showViewHelper('MovieEditView', {
                 moviesCollection: movies,
                 actorsCollection: actors,
-                router: app_router
+                router: appRouter
             });
         });
 
-        app_router.on('route:moviesDetailAction', function(options) {
+        appRouter.on('route:moviesDetailAction', function(options) {
             showViewHelper('MovieDetailView', {
                 id: options,
                 moviesCollection: movies,
                 actorsCollection: actors,
-                router: app_router
+                router: appRouter
             });
         });
 
-        app_router.on('route:actorsAction', function() {
+        appRouter.on('route:actorsAction', function() {
             showViewHelper('ActorsListView', {
                 actorsCollection: actors
             });
         });
 
-        app_router.on('route:actorsEditAction', function(options) {
+        appRouter.on('route:actorsEditAction', function(options) {
             showViewHelper('ActorEditView', {
                 id: options,
                 moviesCollection: movies,
                 actorsCollection: actors,
-                router: app_router
+                router: appRouter
             });
         });
 
-        app_router.on('route:actorsNewAction', function(options) {
+        appRouter.on('route:actorsNewAction', function(options) {
             showViewHelper('ActorEditView', {
                 moviesCollection: movies,
                 actorsCollection: actors,
-                router: app_router
+                router: appRouter
             });
         });
 
-        app_router.on('route:actorsDetailAction', function(options) {
+        appRouter.on('route:actorsDetailAction', function(options) {
             showViewHelper('ActorDetailView', {
                 id: options,
                 moviesCollection: movies,
                 actorsCollection: actors,
-                router: app_router
+                router: appRouter
             });
         });
 
-        app_router.on('route:searchAction', function(options) {
-            console.log('Search Action');
-            console.log(options);
+        appRouter.on('route:searchAction', function(options) {
 
             var queryArray = options.split('&'),
                 category = queryArray[0];
-                query = queryArray[1],
-                openViewID = 'SearchMoviesView';
+            query = queryArray[1],
+            openViewID = 'SearchMoviesView';
 
-            if(category === 'actors'){
+            if (category === 'actors') {
                 openViewID = 'SearchActorsView';
             }
 
@@ -154,19 +168,26 @@ define([
                 query: query,
                 moviesCollection: movies,
                 actorsCollection: actors,
-                router: app_router
+                router: appRouter
             });
 
             App.Instances.views.AppSearchBoxView.syncUI({
                 query: query,
                 selected: category
-            });  
+            });
         });
-        
+
 
         Backbone.history.start();
     };
 
+    /**
+     * Allow swich between Views
+     * @method showViewHelper
+     * @param {} viewID
+     * @param {} options
+     * @return
+     */
     var showViewHelper = function(viewID, options) {
         var viewInstances = App.Instances.views;
         if (!viewInstances[viewID]) {

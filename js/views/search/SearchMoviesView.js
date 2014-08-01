@@ -12,31 +12,55 @@ define([
 
         },
 
+        /**
+         * Description
+         * @method initialize
+         * @param {} options
+         * @return
+         */
         initialize: function(options) {
             this.moviesCollection = options.moviesCollection;
         },
 
+        /**
+         * Description
+         * @method render
+         * @param {} options
+         * @return
+         */
         render: function(options) {
             //Sync Data
             this.moviesCollection.fetch();
 
             var instance = this,
-                movies = this.moviesCollection.getByNameSubstr(options.query),
+                movies = instance.moviesCollection.getByNameSubstr(options.query),
                 template = _.template(searchMoviesListTemplate, {
                     data: movies
-                });
+                }),
+                ratingNode,
+                viewSrcNode = instance.$el;
 
-            instance.$el.html(template);
+            viewSrcNode.html(template);
 
-            var ratingNode = instance.$el.find('.rating');
+            ratingNode = viewSrcNode.find('.rating');
             ratingNode.rating();
-            this.show();
+            instance.show();
         },
 
+        /**
+         * Description
+         * @method hide
+         * @return
+         */
         hide: function() {
             this.$el.hide();
         },
 
+        /**
+         * Description
+         * @method show
+         * @return
+         */
         show: function() {
             this.$el.show();
         }

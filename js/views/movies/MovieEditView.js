@@ -10,6 +10,17 @@ define([
     'text!templates/actors/actorsTrTemplate.html',
 ], function($, jquerySerialize, _, Backbone, MovieModel, movieEditTemplate, movieActorsListTemplate, movieToAddActorListTemplate, actorsTrTemplate) {
 
+    //-------------------------------------------------------
+    // Static vars
+    //-------------------------------------------------------
+    
+    var ACTOR_COLLECTION = 'ActorCollection',
+        MOVIES = 'movies';
+
+    //-------------------------------------------------------
+    // Movie Edit View
+    //-------------------------------------------------------
+
     var MovieEditView = Backbone.View.extend({
         el: $("#movie-edit"),
         events: {
@@ -23,125 +34,180 @@ define([
         },
         model: {},
 
+        /**
+         * Description
+         * @method initialize
+         * @param {} options
+         * @return
+         */
         initialize: function(options) {
-            this.moviesCollection = options.moviesCollection;
-            this.actorsCollection = options.actorsCollection;
-            this.router = options.router;
+            var instance = this;
+
+            instance.moviesCollection = options.moviesCollection;
+            instance.actorsCollection = options.actorsCollection;
+            instance.router = options.router;
         },
 
+        /**
+         * Description
+         * @method render
+         * @param {} options
+         * @return
+         */
         render: function(options) {
             var instance = this,
                 template,
                 movie,
-                id = options.id;
-            this.moviesCollection.fetch();
+                id = options.id,
+                viewSrcNode = viewSrcNode;
+
+            instance.moviesCollection.fetch();
 
             if (id) {
                 //Caching the recent movies values
                 movie = instance.moviesCollection.get(id);
-                this.model = movie;
+                instance.model = movie;
 
                 instance.model.fetch({
                     success: function(data) {
                         var template = _.template(movieEditTemplate, {
-                            data: data
-                        });
-                        instance.$el.html(template);
+                                data: data
+                            }),
+                            movieActors = [],
+                            actorInstance,
+                            actualActors = [],
+                            templateActors;
+
+                        viewSrcNode.html(template);
 
                         instance.actorsCollection.fetch();
-                        var movieActors = [],
-                            actorInstance,
-                            actualActors = [];
-  
-                        _.each(instance.model.get('actorCollection'), function(item) {
+
+
+                        _.each(instance.model.get(ACTOR_COLLECTION), function(item) {
                             actorInstance = instance.actorsCollection.get(item);
-                            if(actorInstance){
+                            if (actorInstance) {
                                 movieActors.push(instance.actorsCollection.get(item));
                                 actualActors.push(item);
-                            } 
-       
+                            }
+
                         });
 
-                        instance.model.set('actorCollection', actualActors);
-                        instance.model.save(); 
+                        instance.model.set(ACTOR_COLLECTION, actualActors);
+                        instance.model.save();
 
-                        var templateActors = _.template(movieActorsListTemplate, {
+                        templateActors = _.template(movieActorsListTemplate, {
                             data: movieActors
                         });
 
-                        instance.$el.find('.movie-actor-list').prepend(templateActors);
+                        viewSrcNode.find('.movie-actor-list').prepend(templateActors);
 
                     }
                 });
             } else {
                 movie = new MovieModel();
-                this.model = movie;
+                instance.model = movie;
                 template = _.template(movieEditTemplate, {
                     data: movie
                 });
-                this.$el.html(template);
+                viewSrcNode.html(template);
             }
 
-            this.show();
+            instance.show();
         },
 
+        /**
+         * Delete Actor From a Movie
+         * @method deleteActorFromMovie
+         * @param {} e
+         * @return
+         */
         deleteActorFromMovie: function(e) {
-            var node = $(e.currentTarget),
+            var instance = this,
+                node = $(e.currentTarget),
                 actorID = node.attr('data-id'),
-                currentActorCollection = this.model.get('actorCollection');
+                currentActorCollection = instance.model.get(ACTOR_COLLECTION);
 
             currentActorCollection = _.without(currentActorCollection, actorID);
-            this.model.set('actorCollection', currentActorCollection);
+            instance.model.set(ACTOR_COLLECTION, currentActorCollection);
             node.parents("tr").remove();
 
         },
 
+        /**
+         * Show ActorToMovie Widget
+         * @method showActorToMovieView
+         * @param {} e
+         * @return
+         */
         showActorToMovieView: function(e) {
             this.actorsCollection.fetch();
 
-            var rootElement = this.$el,
-                actorsCollection = this.actorsCollection.models,
+            var instance = this,
+                viewSrcNode = instance.$el,
+                actorsCollection = instance.actorsCollection.models,
                 template = _.template(movieToAddActorListTemplate, {
                     data: actorsCollection
-                });
+                }),
+                movieToAddActorListNode = viewSrcNode.find('.movie-toadd-actor-list');
 
-            rootElement.find('.movie-toadd-actor-list').html(template);
-            rootElement.find('.movie-form').hide();
-            rootElement.find('.movie-toadd-actor-list').show();
+            movieToAddActorListNode.html(template);
+            viewSrcNode.find('.movie-form').hide();
+            movieToAddActorListNode.show();
             $(e.currentTarget).hide();
-            rootElement.find('.close-actor-to-movie').show();
+            viewSrcNode.find('.close-actor-to-movie').show();
 
         },
 
+        /**
+         * Close ActorToMovie Widget
+         * @method closeActorToMovieView
+         * @param {} e
+         * @return
+         */
         closeActorToMovieView: function(e) {
-            var rootElement = this.$el;
+            var viewSrcNode = this.$el;
 
-            rootElement.find('.movie-form').show();
-            rootElement.find('.movie-toadd-actor-list').hide();
+            viewSrcNode.find('.movie-form').show();
+            viewSrcNode.find('.movie-toadd-actor-list').hide();
             $(e.currentTarget).hide();
-            rootElement.find('.close-actor-to-movie').hide();
-            rootElement.find('.show-actor-to-movie').show();
+            viewSrcNode.find('.close-actor-to-movie').hide();
+            viewSrcNode.find('.show-actor-to-movie').show();
         },
 
 
+        /**
+         * Add an actor to the Edited Movie
+         * @method addActorToMovie
+         * @param {} e
+         * @return
+         */
         addActorToMovie: function(e) {
-            var node = $(e.currentTarget),
+            var instance = instance,
+                node = $(e.currentTarget),
                 actorID = node.attr('data-id'),
-                currentActorCollection = this.model.get('actorCollection');
+                currentActorCollection = instance.model.get(ACTOR_COLLECTION),
+                template,
+                actorModel;
 
             if (!_.contains(currentActorCollection, actorID)) {
                 currentActorCollection.push(actorID);
-                actorModel = this.actorsCollection.get(actorID);
+                actorModel = instance.actorsCollection.get(actorID);
 
                 //Renderizo una plantilla
                 template = _.template(actorsTrTemplate, {
                     data: actorModel
                 });
 
-                this.$el.find('.movie-actor-list table tbody').append(template);
+                instance.$el.find('.movie-actor-list table tbody').append(template);
             }
         },
 
+        /**
+         * Persist the changes in to the model
+         * @method saveItem
+         * @param {} e
+         * @return Literal
+         */
         saveItem: function(e) {
             var instance = this,
                 details = $(e.currentTarget).serializeObject();
@@ -152,7 +218,7 @@ define([
 
             instance.model.save(details, {
                 success: function(data) {
-                    instance.router.navigate('movies', {
+                    instance.router.navigate(MOVIES, {
                         trigger: true
                     });
                 }
@@ -160,26 +226,50 @@ define([
 
             return false;
         },
+
+        /**
+         * Back to the Movies List View
+         * @method cancelItem
+         * @param {} e
+         * @return
+         */
         cancelItem: function(e) {
-            this.router.navigate('movies', {
+            this.router.navigate(MOVIES, {
                 trigger: true
             });
         },
+
+        /**
+         * Delete the Movie
+         * @method deleteItem
+         * @param {} e
+         * @return
+         */
         deleteItem: function(e) {
             var instance = this;
             instance.model.destroy({
                 success: function() {
-                    instance.router.navigate('movies', {
+                    instance.router.navigate(MOVIES, {
                         trigger: true
                     });
                 }
             })
         },
 
+        /**
+         * Description
+         * @method hide
+         * @return
+         */
         hide: function() {
             this.$el.hide();
         },
 
+        /**
+         * Description
+         * @method show
+         * @return
+         */
         show: function() {
             this.$el.show();
         }

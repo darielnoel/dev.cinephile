@@ -9,6 +9,10 @@ define([
     'text!templates/movies/movieDetailActorsListTemplate.html'
 ], function($, jquerySerialize, jqueyStarRating, _, Backbone, MovieModel, movieDetailTemplate, movieDetailActorsListTemplate) {
 
+    //-------------------------------------------------------
+    // Movie Detail View
+    //-------------------------------------------------------
+
     var MovieDetailView = Backbone.View.extend({
         el: $("#movie-detail"),
         events: {
@@ -16,69 +20,105 @@ define([
         },
         model: {},
 
+        /**
+         * Description
+         * @method initialize
+         * @param {} options
+         * @return
+         */
         initialize: function(options) {
-            this.moviesCollection = options.moviesCollection;
-            this.actorsCollection = options.actorsCollection;
-            this.router = options.router;
+            var instance = this;
+
+            instance.moviesCollection = options.moviesCollection;
+            instance.actorsCollection = options.actorsCollection;
+            instance.router = options.router;
         },
 
+        /**
+         * Description
+         * @method render
+         * @param {} options
+         * @return
+         */
         render: function(options) {
             var instance = this,
                 template,
                 movie,
                 id = options.id;
-            this.moviesCollection.fetch();
+
+            instance.moviesCollection.fetch();
 
             if (id) {
+
                 //Caching the recent movies values
                 movie = instance.moviesCollection.get(id);
-                this.model = movie;
+                instance.model = movie;
 
                 instance.model.fetch({
+
                     success: function(data) {
                         var template = _.template(movieDetailTemplate, {
-                            data: data
-                        });
-                        instance.$el.html(template);
+                                data: data
+                            }),
+                            viewSrcNode = instance.$el,
+                            movieActors = [],
+                            templateActors;
 
-                        var ratingNode = instance.$el.find('.rating');
+                        viewSrcNode.html(template);
+
+                        var ratingNode = viewSrcNode.find('.rating');
                         ratingNode.rating();
 
                         ratingNode.on('rating.change', function(event, value, caption) {
                             instance.model.setRating(value);
                             instance.model.save();
-                             ratingNode.rating('update', instance.model.get('rating'));
+                            ratingNode.rating('update', instance.model.get('rating'));
                         });
 
                         instance.actorsCollection.fetch();
-                        var movieActors = [];
                         _.each(instance.model.get('actorCollection'), function(item) {
                             movieActors.push(instance.actorsCollection.get(item));
                         });
 
-                        var templateActors = _.template(movieDetailActorsListTemplate, {
+                        templateActors = _.template(movieDetailActorsListTemplate, {
                             data: movieActors
                         });
 
-                        instance.$el.find('.movie-actor-list').html(templateActors);
+                        viewSrcNode.find('.movie-actor-list').html(templateActors);
 
                     }
                 });
             }
 
-            this.show();
+            instance.show();
         },
 
+        /**
+         * Back to the movies Views
+         * @method cancelItem
+         * @param {} e
+         * @return
+         */
         cancelItem: function(e) {
             this.router.navigate('movies', {
                 trigger: true
             });
         },
 
+        /**
+         * Description
+         * @method hide
+         * @return
+         */
         hide: function() {
             this.$el.hide();
         },
 
+        /**
+         * Description
+         * @method show
+         * @return
+         */
         show: function() {
             this.$el.show();
         }

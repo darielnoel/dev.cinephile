@@ -3,6 +3,10 @@ define([
     'backbone'
 ], function(_, Backbone) {
 
+    //-------------------------------------------------------
+    // Movies Actors Model
+    //-------------------------------------------------------
+
     var ActorModel = Backbone.Model.extend({
         defaults: function() {
             return {

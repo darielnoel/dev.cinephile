@@ -5,35 +5,62 @@ define([
     'text!templates/movies/moviesThumbailsTemplate.html'
 ], function($, _, Backbone, moviesThumbailsTemplate) {
 
+    //-------------------------------------------------------
+    // Recent Movies View
+    //-------------------------------------------------------
+
     var RecentMoviesView = Backbone.View.extend({
         el: $("#recent-movies"),
         events: {
 
         },
 
+        /**
+         * Description
+         * @method initialize
+         * @param {} options
+         * @return
+         */
         initialize: function(options) {
-            this.moviesCollection = options.moviesCollection;
-            this.moviesCollection.fetch();
+            var instance = this;
+
+            instance.moviesCollection = options.moviesCollection;
+
 
         },
 
+        /**
+         * Description
+         * @method render
+         * @return
+         */
         render: function() {
-            var instance = this;
+            this.moviesCollection.fetch();
 
-            //Caching the recent movies values
-            var recentMovies = this.moviesCollection.recents(),
+            var instance = this,
+                recentMovies = instance.moviesCollection.recents(),
                 template = _.template(moviesThumbailsTemplate, {
                     data: recentMovies
                 });
 
             instance.$el.html(template);
-            this.show();
+            instance.show();
         },
 
+        /**
+         * Description
+         * @method hide
+         * @return
+         */
         hide: function() {
             $(this.el).hide();
         },
 
+        /**
+         * Description
+         * @method show
+         * @return
+         */
         show: function() {
             this.$el.show();
         }

@@ -45,7 +45,13 @@
                 <input type="file" class="form-control" id="files" name="files[]" multiple />
             </div>
         </div>
-        <output id="list"></output>
+
+        <div class="col-lg-10 col-md-10 col-xs-10 thumb">
+                <span id="store-image" class="thumbnail">
+                    <img class="img-responsive" src="<%= data.get('image') ? data.get('image') : 'http://placehold.it/400x300' %>" alt="">
+                </span>
+        </div>
+        <!-- <output id="list"></output> -->
 
 
 

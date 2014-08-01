@@ -7,7 +7,7 @@
 <% _.each(data, function(item) { %>
     <div class="col-lg-3 col-md-4 col-xs-6 thumb">
             <a class="thumbnail" href="#/movies/detail/<%= item.id %>">
-                <img class="img-responsive" src="http://placehold.it/400x300" alt="">
+                <img class="img-responsive" src="<%= item.get('image') ? item.get('image') : 'http://placehold.it/400x300' %>" alt="">
             </a>
             <p style="text-align:center"><strong><%= item.get('name')%></strong></p>
     </div>

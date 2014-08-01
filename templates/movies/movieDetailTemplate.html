@@ -38,6 +38,11 @@
                 <input class="rating form-control" data-show-clear=false data-show-caption=false data-size="xs" data-min="0" data-max="5" data-step="1" data-stars=5 value="<%= data.get('rating') %>">
             </div>
         </div>
+        <div class="col-lg-12 col-md-12 col-xs-12 thumb">
+                <span id="store-image" class="thumbnail">
+                    <img class="img-responsive" src="<%= data.get('image') ? data.get('image') : 'http://placehold.it/400x300' %>" alt="">
+                </span>
+        </div>
         <input type="hidden" name="cid" value="<%= data.cid %>" />
         <input type="button" class="btn cancel" value="Back" />
     </form>

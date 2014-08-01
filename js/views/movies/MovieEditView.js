@@ -109,15 +109,16 @@ define([
                     data: movie
                 });
                 viewSrcNode.html(template);
-
-                console.log(viewSrcNode.find('#files'));
-                viewSrcNode.find('#files').change(instance.handleFileSelect);
+              
             }
 
+            viewSrcNode.find('#files').change($.proxy(instance.handleFileSelect, instance));
             instance.show();
         },
 
         handleFileSelect: function(evt) {
+            var instance = this,
+                viewSrcNode = instance.$el;
 
             console.log('handleFileSelect');
             var files = evt.target.files; // FileList object
@@ -136,12 +137,9 @@ define([
               reader.onload = (function(theFile) {
                 return function(e) {
                   // Render thumbnail.
-                  var span = document.createElement('span');
-                  span.innerHTML = ['<img class="thumb" src="', e.target.result,
-                                    '" title="', escape(theFile.name), '"/>'].join('');
-                    
-                  document.getElementById('list').insertBefore(span, null);
-                  localStorage.setItem('img', e.target.result);
+                  console.log(viewSrcNode.find('#store-image img'));
+                  viewSrcNode.find('#store-image img').attr('src', e.target.result);
+                  instance.model.set('image', e.target.result);
                 };
               })(f);
 

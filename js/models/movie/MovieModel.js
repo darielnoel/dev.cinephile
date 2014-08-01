@@ -73,6 +73,7 @@ define([
                 ratesTotalVotes: 5,
                 genere: [],
                 actorCollection: [],
+                image:""
             };
         }
     });

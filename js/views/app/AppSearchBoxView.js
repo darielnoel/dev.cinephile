@@ -37,7 +37,7 @@ define([
                 var $target = $(event.currentTarget);
 
                 $target.closest('.input-group-btn')
-                    .find('[data-bind="label"]').text($target.text())
+                    .find('[data-bind="label"]').text($target.find('a').text())
                     .end()
                     .children('.dropdown-toggle').dropdown('toggle');
 

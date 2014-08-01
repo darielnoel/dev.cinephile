@@ -1,5 +1,5 @@
 <div class="row">
-<legend><%= data ? 'Edit Actor' : 'New Actor' %></legend>
+<legend><%= data.get('firstName') ? 'Edit Actor' : 'New Actor' %></legend>
 <div class="col-lg-4">
     <form role="form" class="actors-edit-form form-horizontal">
         <div class="form-group">

@@ -14,7 +14,7 @@ define([
     // Static vars
     //-------------------------------------------------------
     
-    var ACTOR_COLLECTION = 'ActorCollection',
+    var ACTOR_COLLECTION = 'actorCollection',
         MOVIES = 'movies';
 
     //-------------------------------------------------------
@@ -59,7 +59,7 @@ define([
                 template,
                 movie,
                 id = options.id,
-                viewSrcNode = viewSrcNode;
+                viewSrcNode = instance.$el;
 
             instance.moviesCollection.fetch();
 
@@ -81,7 +81,6 @@ define([
                         viewSrcNode.html(template);
 
                         instance.actorsCollection.fetch();
-
 
                         _.each(instance.model.get(ACTOR_COLLECTION), function(item) {
                             actorInstance = instance.actorsCollection.get(item);
@@ -182,7 +181,7 @@ define([
          * @return
          */
         addActorToMovie: function(e) {
-            var instance = instance,
+            var instance = this,
                 node = $(e.currentTarget),
                 actorID = node.attr('data-id'),
                 currentActorCollection = instance.model.get(ACTOR_COLLECTION),

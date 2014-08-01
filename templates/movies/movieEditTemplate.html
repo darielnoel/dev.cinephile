@@ -1,5 +1,5 @@
 <div class="row">
-<legend><%= data ? 'Edit Movie' : 'New Movie' %></legend>
+<legend><%=data.get('name') ? 'Edit Movie' : 'New Movie' %></legend>
 <div class="col-lg-4 movie-form">
     <form role="form" class="movies-edit-form form-horizontal">
         <div class="form-group">
@@ -47,6 +47,7 @@
         <input type="button" class="btn cancel" value="Back" />
     </form>
 </div>
+<% if (data.get('name')) { %>
 <div class="col-lg-6 movie-actor-list">
     <button type="button" class="btn btn-primary btn-sm show-actor-to-movie pull-right">
         <span class="glyphicon glyphicon-plus"></span>Add
@@ -57,4 +58,6 @@
 </div>
 <div class="col-lg-6 movie-toadd-actor-list" style="display:none">
 </div> 
+<% }; %>
+
 </div>

@@ -62,6 +62,44 @@ define([
                 });
             }
             return foundedMovies;
+        },
+
+        /**
+         * Description
+         * @method getRelatesMovies
+         * @param {} movieID
+         * @return 
+         */
+        getRelatesMovies: function(movieID){
+            var instance = this,
+                inspectedMovieModel = instance.get(movieID),
+                relatesMovies;
+
+            relatesMovies = instance.filter(function(item) {
+                
+                if(item.get('id')!==movieID){
+                    //Same actors
+                    var matchValues = [];
+                    matchValues = _.intersection(inspectedMovieModel.get('actorCollection'),item.get('actorCollection'));
+                    
+                    if(matchValues.length > 0){
+                        return true;
+                    }
+
+                    //Same Generes
+                    matchValues = _.intersection(inspectedMovieModel.get('genere'),item.get('genere'));
+                    if(matchValues.length > 0){
+                        return true;
+                    }                      
+                }
+             
+                
+                return false;
+            });
+
+            console.log(relatesMovies);
+            return relatesMovies;
+
         }
 
     });

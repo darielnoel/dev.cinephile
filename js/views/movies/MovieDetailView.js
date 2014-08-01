@@ -6,8 +6,9 @@ define([
     'backbone',
     'models/movie/MovieModel',
     'text!templates/movies/movieDetailTemplate.html',
-    'text!templates/movies/movieDetailActorsListTemplate.html'
-], function($, jquerySerialize, jqueyStarRating, _, Backbone, MovieModel, movieDetailTemplate, movieDetailActorsListTemplate) {
+    'text!templates/movies/movieDetailActorsListTemplate.html',
+    'text!templates/movies/moviesRelatesTemplate.html'
+], function($, jquerySerialize, jqueyStarRating, _, Backbone, MovieModel, movieDetailTemplate, movieDetailActorsListTemplate, moviesRelatesTemplate) {
 
     //-------------------------------------------------------
     // Movie Detail View
@@ -62,7 +63,9 @@ define([
                             }),
                             viewSrcNode = instance.$el,
                             movieActors = [],
-                            templateActors;
+                            templateActors,
+                            templateRelatesMovies,
+                            relatesMovies;
 
                         viewSrcNode.html(template);
 
@@ -75,6 +78,7 @@ define([
                             ratingNode.rating('update', instance.model.get('rating'));
                         });
 
+                        //Actors
                         instance.actorsCollection.fetch();
                         _.each(instance.model.get('actorCollection'), function(item) {
                             movieActors.push(instance.actorsCollection.get(item));
@@ -85,6 +89,19 @@ define([
                         });
 
                         viewSrcNode.find('.movie-actor-list').html(templateActors);
+
+                        //Relates Movies
+                        relatesMovies = instance.moviesCollection.getRelatesMovies(id);
+                        console.log(relatesMovies);
+
+                        templateRelatesMovies = _.template(moviesRelatesTemplate, {
+                            data: relatesMovies
+                        });
+
+                        viewSrcNode.find('.relates-movies-list').html(templateRelatesMovies);
+                        
+
+                        
 
                     }
                 });

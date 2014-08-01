@@ -68,7 +68,7 @@ define([
      */
     var initialize = function() {
 
-        var appRouter = new App.Router(),
+       var appRouter = new App.Router(),
             movies = new MoviesCollection(),
             actors = new ActorsCollection();
 
@@ -202,6 +202,10 @@ define([
 
         viewInstances[viewID].render(options);
     };
+
+    var setupFixtures = function(){
+
+    }
 
     return {
         initialize: initialize
